@@ -5,16 +5,28 @@ This AI project will involve the minimax search algorithm with alpha-beta prunin
 From Akansha Goel to Everyone:  10:31 AM
 I have collected a few common links, it might help :
   https://deepmind.com/research/case-studies/alphago-the-story-so-far#muzero
+
   https://www.youtube.com/watch?v=MPXGiowUr0o
+
   https://github.com/topics/alphago
+
   https://github.com/maxpumperla/deep_learning_and_the_game_of_go
+
   https://github.com/suragnair/alpha-zero-general
+
   https://deepmind.com/blog/article/alphazero-shedding-new-light-grand-games-chess-shogi-and-go
+
   https://web.stanford.edu/~surag/posts/alphazero.html
+
   https://github.com/deepmind?page=2
+
   https://github.com/topics/alphago-zero
+
   https://github.com/YuriCat/MuZeroJupyterExample?utm_source=catalyzex.com
+
   https://github.com/pmuens/alphago
+
   https://medium.com/dataseries/deepminds-muzero-is-one-of-the-most-important-deep-learning-systems-ever-created-347442a6793
 
+Chat is on 
   https://web.groupme.com/
