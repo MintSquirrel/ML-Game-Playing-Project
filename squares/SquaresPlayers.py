@@ -13,7 +13,7 @@ class RandomPlayer():
         return a
 
 
-class HumanOthelloPlayer():
+class HumanSquaresPlayer():
     def __init__(self, game):
         self.game = game
 
@@ -41,7 +41,7 @@ class HumanOthelloPlayer():
         return a
 
 
-class GreedyOthelloPlayer():
+class GreedySquaresPlayer():
     def __init__(self, game):
         self.game = game
 

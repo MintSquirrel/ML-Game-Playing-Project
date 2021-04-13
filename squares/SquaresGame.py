@@ -2,10 +2,10 @@ from __future__ import print_function
 import sys
 sys.path.append('..')
 from Game import Game
-from .OthelloLogic import Board
+from .SquaresLogic import Board
 import numpy as np
 
-class OthelloGame(Game):
+class SquaresGame(Game):
     square_content = {
         -1: "X",
         +0: "-",
@@ -14,7 +14,7 @@ class OthelloGame(Game):
 
     @staticmethod
     def getSquarePiece(piece):
-        return OthelloGame.square_content[piece]
+        return SquaresGame.square_content[piece]
 
     def __init__(self, n):
         self.n = n
@@ -113,7 +113,7 @@ class OthelloGame(Game):
             print(y, "|", end="")    # print the row #
             for x in range(n):
                 piece = board[y][x]    # get the piece to print
-                print(OthelloGame.square_content[piece], end=" ")
+                print(SquaresGame.square_content[piece], end=" ")
             print("|")
 
         print("-----------------------")
