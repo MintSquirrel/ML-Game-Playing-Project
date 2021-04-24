@@ -1,22 +1,15 @@
-from __future__ import print_function
 import sys
+import colorama
+from colorama import Fore, Style
+import numpy as np
+
 sys.path.append('..')
 from Game import Game
 from .SquaresLogic import Board
-import numpy as np
+
 
 class SquaresGame(Game):
-    square_content = {
-        -1: "X",
-        +0: "-",
-        +1: "O"
-    }
-
-    @staticmethod
-    def getSquarePiece(piece):
-        return SquaresGame.square_content[piece]
-
-    def __init__(self, n):
+    def __init__(self, n=3):
         self.n = n
 
     def getInitBoard(self):
@@ -26,94 +19,110 @@ class SquaresGame(Game):
 
     def getBoardSize(self):
         # (a,b) tuple
-        return (self.n, self.n)
+        return 2*self.n+1, self.n+1
 
     def getActionSize(self):
         # return number of actions
-        return self.n*self.n + 1
+        return 2 * (self.n + 1) * self.n + 1
 
     def getNextState(self, board, player, action):
         # if player takes action on board, return next (board,player)
         # action must be a valid move
-        if action == self.n*self.n:
-            return (board, -player)
         b = Board(self.n)
         b.pieces = np.copy(board)
-        move = (int(action/self.n), action%self.n)
-        b.execute_move(move, player)
-        return (b.pieces, -player)
+
+        if action == self.getActionSize() - 1:
+            b.pieces[2, -1] = 0
+        else:
+            b.execute_move(action, player)
+
+        return b.pieces, -player
 
     def getValidMoves(self, board, player):
         # return a fixed size binary vector
-        valids = [0]*self.getActionSize()
         b = Board(self.n)
         b.pieces = np.copy(board)
-        legalMoves =  b.get_legal_moves(player)
-        if len(legalMoves)==0:
-            valids[-1]=1
-            return np.array(valids)
-        for x, y in legalMoves:
-            valids[self.n*x+y]=1
-        return np.array(valids)
+        return b.get_legal_moves(player)
 
     def getGameEnded(self, board, player):
         # return 0 if not ended, 1 if player 1 won, -1 if player 1 lost
-        # player = 1
         b = Board(self.n)
         b.pieces = np.copy(board)
-        if b.has_legal_moves(player):
+
+        if b.has_legal_moves():
             return 0
-        if b.has_legal_moves(-player):
-            return 0
-        if b.countDiff(player) > 0:
-            return 1
-        return -1
+
+        if b.pieces[0][-1] == b.pieces[1][-1]:
+            return -1 * player
+        else:
+            player_1_won = b.pieces[0][-1] > b.pieces[1][-1]
+            return 1*player if player_1_won else -1*player
 
     def getCanonicalForm(self, board, player):
-        # return state if player==1, else return -state if player==-1
-        return player*board
+        board = np.copy(board)
+        if player == -1:
+            # swap score
+            aux = board[0, -1]
+            board[0, -1] = board[1, -1]
+            board[1, -1] = aux
+        return board
 
     def getSymmetries(self, board, pi):
         # mirror, rotational
-        assert(len(pi) == self.n**2+1)  # 1 for pass
-        pi_board = np.reshape(pi[:-1], (self.n, self.n))
+
+        horizontal = np.copy(board[:self.n+1, :self.n])
+        vertical = np.copy(board[-self.n:, :])
+        t = self.n * (self.n + 1)
+        pi_horizontal = np.copy(pi[:t]).reshape((self.n+1, self.n))
+        pi_vertical = np.copy(pi[t:-1]).reshape((self.n, self.n+1))
+
         l = []
 
         for i in range(1, 5):
-            for j in [True, False]:
-                newB = np.rot90(board, i)
-                newPi = np.rot90(pi_board, i)
-                if j:
-                    newB = np.fliplr(newB)
-                    newPi = np.fliplr(newPi)
-                l += [(newB, list(newPi.ravel()) + [pi[-1]])]
+            horizontal = np.rot90(horizontal)
+            vertical = np.rot90(vertical)
+            pi_horizontal = np.rot90(pi_horizontal)
+            pi_vertical = np.rot90(pi_vertical)
+
+            for _ in [True, False]:
+                horizontal = np.fliplr(horizontal)
+                vertical = np.fliplr(vertical)
+                pi_horizontal = np.fliplr(pi_horizontal)
+                pi_vertical = np.fliplr(pi_vertical)
+
+                new_board = Board(self.n)
+                new_board.pieces = np.copy(board)
+                new_board.pieces[:self.n + 1, :self.n] = vertical
+                new_board.pieces[-self.n:, :] = horizontal
+
+                l += [(new_board.pieces, list(pi_vertical.ravel()) + list(pi_horizontal.ravel()) + [pi[-1]])]
+
+            aux = horizontal
+            horizontal = vertical
+            vertical = aux
+
+            aux = pi_horizontal
+            pi_horizontal = pi_vertical
+            pi_vertical = aux
         return l
 
     def stringRepresentation(self, board):
+        # 8x8 numpy array (canonical board)
         return board.tostring()
-
-    def stringRepresentationReadable(self, board):
-        board_s = "".join(self.square_content[square] for row in board for square in row)
-        return board_s
-
-    def getScore(self, board, player):
-        b = Board(self.n)
-        b.pieces = np.copy(board)
-        return b.countDiff(player)
 
     @staticmethod
     def display(board):
-        n = board.shape[0]
-        print("   ", end="")
-        for y in range(n):
-            print(y, end=" ")
-        print("")
-        print("-----------------------")
-        for y in range(n):
-            print(y, "|", end="")    # print the row #
-            for x in range(n):
-                piece = board[y][x]    # get the piece to print
-                print(SquaresGame.square_content[piece], end=" ")
-            print("|")
+        n = board.shape[1]
+        for i in range(n):
+            for j in range(n-1):
+                s = "+---" if board[i][j] else "+   "
+                print(Fore.BLUE +s, end="")
+            print(Fore.BLUE +"+")
+            if i < n-1:
+                for j in range(n):
+                    s = "|   " if board[i+n][j] else "    "
+                    print(s, end="")
+            print(Fore.WHITE+"")
 
-        print("-----------------------")
+        print("Pass: {}".format(board[2,-1]))
+        print("Score {} x {}".format(board[0, -1], board[1, -1]))
