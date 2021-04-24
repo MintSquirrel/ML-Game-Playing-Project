@@ -1,7 +1,19 @@
 # ML-Game-Playing-Project
+Explanation:
+pit.py is used for playing the game.
+main.py is used for training the ai.
+./squares/ contains the actual squares game code.
+This implementation of alpha go is based on Surag Nair's https://github.com/suragnair/alpha-zero-general .
+
+Requirements:
+A pytorch docker image needs to be run first. There are also a lot of python libraries involved.
+Getting this running on my desktop computer was a big ordeal. If you can run setup_env.sh then you should be OK, though. 
+
+Project Description:
 Implement a game playing algorithm for an AI to play against a human in a game of squares against a human (the game seems to go by multiple names). The game “board” starts with a grid of dots, for example, an 11-row by 11-column matrix of dots. On a player’s turn, they must connect a pair of adjacent dots. At the end of the game, each pair of adjacent dots will have been connected forming a grid of squares, a 10x10 grid in the previous example. When a player’s line segment completes one or two small squares connecting adjacent dots, they capture the squares, enter their initial(s) inside the completed squares, and get to go again (get to draw another line segment). Otherwise, the next player goes, drawing a line to connect two adjacent dots.
 This AI project will involve the minimax search algorithm with alpha-beta pruning, which we will likely implement in class. You will combine that algorithm with an existing open source implementation of AlphaGo Zero which utilizes deep reinforcement learning.
 
+Useful Links:
 From Akansha Goel to Everyone:  10:31 AM
 I have collected a few common links, it might help :
   https://deepmind.com/research/case-studies/alphago-the-story-so-far#muzero
