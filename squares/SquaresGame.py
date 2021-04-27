@@ -14,6 +14,9 @@ class SquaresGame(Game):
 
     def getInitBoard(self):
         # return initial board (numpy board)
+        print(Fore.RED +"New match starting.")
+        print(Fore.WHITE +"The AI makes the first move.")
+        print(Fore.WHITE +"See grid_guide.png to know which numbers to enter for each possible move. Good luck!")
         b = Board(self.n)
         return np.array(b.pieces)
 
@@ -56,6 +59,10 @@ class SquaresGame(Game):
             return -1 * player
         else:
             player_1_won = b.pieces[0][-1] > b.pieces[1][-1]
+            if player_1_won:
+                print(Fore.YELLOW +"The AI wins!")
+            else:
+                print(Fore.GREEN +"The Human Player wins!")
             return 1*player if player_1_won else -1*player
 
     def getCanonicalForm(self, board, player):
@@ -125,4 +132,4 @@ class SquaresGame(Game):
             print(Fore.WHITE+"")
 
         print("Pass: {}".format(board[2,-1]))
-        print("Score {} x {}".format(board[0, -1], board[1, -1]))
+        print("AI's Score: {} \nPlayer's Score: {}\n".format(board[0, -1], board[1, -1]))

@@ -6,7 +6,10 @@ main.py is used for training the ai.
 This implementation of alpha go is based on Surag Nair's https://github.com/suragnair/alpha-zero-general .
 
 Requirements:
-A pytorch docker image needs to be run first. There are also a lot of python libraries involved.
+To play against: Python 3 is needed. 
+Python libraries numpy and pygame are needed as well. python3 pit.py
+
+To train: A pytorch docker image needs to be run first. There are also a lot of python libraries involved.
 Getting this running on my desktop computer was a big ordeal. If you can run setup_env.sh then you should be OK, though. 
 
 Project Description:
