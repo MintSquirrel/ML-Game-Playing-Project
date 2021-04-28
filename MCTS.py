@@ -24,6 +24,7 @@ class MCTS():
 
         self.Es = {}  # stores game.getGameEnded ended for board s
         self.Vs = {}  # stores game.getValidMoves for board s
+        self.minimax_depth = 3 #depth for alpha beta searches
 
     def getActionProb(self, canonicalBoard, temp=1):
         """
@@ -35,7 +36,7 @@ class MCTS():
                    proportional to Nsa[(s,a)]**(1./temp)
         """
         for i in range(self.args.numMCTSSims):
-            self.search(canonicalBoard)
+            self.search(canonicalBoard,self.minimax_depth,-2,2,True)
 
         s = self.game.stringRepresentation(canonicalBoard)
         counts = [self.Nsa[(s, a)] if (s, a) in self.Nsa else 0 for a in range(self.game.getActionSize())]
@@ -52,7 +53,7 @@ class MCTS():
         probs = [x / counts_sum for x in counts]
         return probs
 
-    def search(self, canonicalBoard):
+    def search(self, canonicalBoard,depth,a,b,maximizingPlayer):
         """
         This function performs one iteration of MCTS. It is recursively called
         till a leaf node is found. The action chosen at each node is one that
@@ -74,9 +75,31 @@ class MCTS():
 
         s = self.game.stringRepresentation(canonicalBoard)
 
+        """
+        The psuedo code for alpha beta minimax
+        if depth == 0 or node = terminal_node:
+            return value of node
+        if maximizingPlayer:
+            value := -100
+            for each child of node:
+                value := max(value, alphabeta(child, depth − 1, α, β, FALSE))
+                a := max (a,value)
+                if a >= b:
+                    break
+            return value
+        else:
+            value := +100
+            for each child of node:
+                value := min(value, alphabeta(child, depth − 1, α, β, TRUE))
+                b := min(b,value)
+                if b <= a:
+                    break
+            return value
+        """
+
         if s not in self.Es:
             self.Es[s] = self.game.getGameEnded(canonicalBoard, 1)
-        if self.Es[s] != 0:
+        if self.Es[s] != 0: # or depth == 0:
             # terminal node
             return -self.Es[s]
 
@@ -122,7 +145,7 @@ class MCTS():
         next_s, next_player = self.game.getNextState(canonicalBoard, 1, a)
         next_s = self.game.getCanonicalForm(next_s, next_player)
 
-        v = self.search(next_s)
+        v = self.search(next_s,depth-1,v,b,maximizingPlayer)
 
         if (s, a) in self.Qsa:
             self.Qsa[(s, a)] = (self.Nsa[(s, a)] * self.Qsa[(s, a)] + v) / (self.Nsa[(s, a)] + 1)

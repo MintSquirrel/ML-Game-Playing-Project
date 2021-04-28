@@ -7,6 +7,9 @@ from squares.SquaresGame import SquaresGame
 from squares.SquaresPlayers import HumanSquaresPlayer, RandomPlayer, GreedyRandomPlayer
 from squares.pytorch.NNet import NNetWrapper
 
+print("New match starting.")
+print("The AI makes the first move.")
+print("See grid_guide.png to know which numbers to enter for each possible move. Good luck!")
 
 g = SquaresGame(n=4)
 
